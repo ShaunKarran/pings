@@ -1,0 +1,10 @@
+[package]
+name = "pings"
+version = "0.1.0"
+authors = ["Shaun Karran <shaun.karran@gmail.com>"]
+description = "My implementation of the Pings challenge for Tanda."
+
+[dependencies]
+hyper = "0.10"
+iron = "0.5"
+router = "0.5"
