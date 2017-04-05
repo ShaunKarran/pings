@@ -1,5 +1,6 @@
 extern crate iron;
 extern crate router;
+extern crate serde_json;
 
 use iron::prelude::*;
 use iron::status;
@@ -10,18 +11,16 @@ use router::Router;
 //     Ok(Response::with((status::Ok, *query)))
 // }
 
-fn clear_data(req: &mut Request) -> IronResult<Response> {
+fn clear_data(_: &mut Request) -> IronResult<Response> {
     println!("Clearing data...");
     Ok(Response::with(status::Ok))
 }
 
-fn get_devices(req: &mut Request) -> IronResult<Response> {
+fn get_devices(_: &mut Request) -> IronResult<Response> {
     println!("Getting devices...");
-    // let test_devices = Vec::new("5581db36-57e7-4274-a36d-0c105c70fbfa", "5225a416-3394-4e9f-9d97-e371d7615197");
-    // TODO: Response body should be plain text in JSON format.
-    // eg. ["5581db36-57e7-4274-a36d-0c105c70fbfa","5225a416-3394-4e9f-9d97-e371d7615197"]
-    let test_devices = "[\"5581db36-57e7-4274-a36d-0c105c70fbfa\",\"5225a416-3394-4e9f-9d97-e371d7615197\"]";
-    Ok(Response::with((status::Ok, test_devices)))
+    let devices = vec!("5581db36-57e7-4274-a36d-0c105c70fbfa", "5225a416-3394-4e9f-9d97-e371d7615197");
+    let devices_json = serde_json::to_string(&devices).unwrap();
+    Ok(Response::with((status::Ok, devices_json)))
 }
 
 fn main() {

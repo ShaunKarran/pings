@@ -8,3 +8,6 @@ description = "My implementation of the Pings challenge for Tanda."
 hyper = "0.10"
 iron = "0.5"
 router = "0.5"
+
+# rustc-serialize = "0.3"
+serde_json = "0.9"
