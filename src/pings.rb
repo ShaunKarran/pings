@@ -11,9 +11,9 @@ require 'date'
 def run_tests!
   puts %Q(Hi! We'll be testing your server running at #{BASE_URL})
 
-  puts %Q(\nAsking the server to clear all data...)
+  # puts %Q(\nAsking the server to clear all data...)
   fail!("Our post to /clear_data didn't return a 200 status code.") unless post_clear_data_request
-  # fail!("We asked the server to clear all data, but it seems like there is still some data present.") unless get_device_list.empty?
+  fail!("We asked the server to clear all data, but it seems like there is still some data present.") unless get_device_list.empty?
 
   puts %Q(\nSending some ping data to the server...)
   initial_post_data.each {|device_id, times| times.each {|time| post_request(device_id, time)}}

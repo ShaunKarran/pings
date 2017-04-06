@@ -5,12 +5,12 @@ authors = ["Shaun Karran <shaun.karran@gmail.com>"]
 description = "My implementation of the Pings challenge for Tanda."
 
 [dependencies]
-hyper = "0.10"
-iron = "0.5"
-router = "0.5"
-
-# rustc-serialize = "0.3"
 serde_json = "0.9"
 
 rocket = "0.2"
 rocket_codegen = "0.2"
+
+# iron = "0.5"
+# router = "0.5"
+
+# hyper = "0.10"
