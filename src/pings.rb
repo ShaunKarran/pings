@@ -15,8 +15,8 @@ def run_tests!
   fail!("Our post to /clear_data didn't return a 200 status code.") unless post_clear_data_request
   # fail!("We asked the server to clear all data, but it seems like there is still some data present.") unless get_device_list.empty?
 
-  # puts %Q(\nSending some ping data to the server...)
-  # initial_post_data.each {|device_id, times| times.each {|time| post_request(device_id, time)}}
+  puts %Q(\nSending some ping data to the server...)
+  initial_post_data.each {|device_id, times| times.each {|time| post_request(device_id, time)}}
 
   puts %Q(\nChecking device list. Expecting #{initial_post_data.keys.count} devices...)
   devices = get_device_list

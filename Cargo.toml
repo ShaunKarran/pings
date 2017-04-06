@@ -11,3 +11,6 @@ router = "0.5"
 
 # rustc-serialize = "0.3"
 serde_json = "0.9"
+
+rocket = "0.2"
+rocket_codegen = "0.2"
