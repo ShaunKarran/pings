@@ -41,23 +41,23 @@ def run_tests!
   actions = get_on_dates(initial_post_data.keys.last, initial_post_data.values.last.first, initial_post_data.values.last.last)
   fail!("Expected #{initial_post_data.values.last.count - 1} pings, got #{actions.count} pings.") unless actions.count == initial_post_data.values.last.count - 1
 
-  # puts %Q(\nGetting all data for all devices...)
-  # actions = get_on_dates("all", Date.new(2000, 1, 1), Date.new(2100, 1, 1))
-  # fail!("Expected #{initial_post_data.values.flatten.count} pings, got #{actions.values.flatten.count} pings.") unless actions.values.flatten.count == initial_post_data.values.flatten.count
+  puts %Q(\nGetting all data for all devices...)
+  actions = get_on_dates("all", Date.new(2000, 1, 1), Date.new(2100, 1, 1))
+  fail!("Expected #{initial_post_data.values.flatten.count} pings, got #{actions.values.flatten.count} pings.") unless actions.values.flatten.count == initial_post_data.values.flatten.count
 
-  # puts %Q(\nGetting data for all devices in a range of timestamps...)
-  # actions = get_on_dates("all", initial_post_data.values.flatten.min + 1, initial_post_data.values.flatten.max + 1)
-  # fail!("Expected #{initial_post_data.values.flatten.count - 1} pings, got #{actions.values.flatten.count} pings.") unless actions.values.flatten.count == initial_post_data.values.flatten.count - 1
+  puts %Q(\nGetting data for all devices in a range of timestamps...)
+  actions = get_on_dates("all", initial_post_data.values.flatten.min + 1, initial_post_data.values.flatten.max + 1)
+  fail!("Expected #{initial_post_data.values.flatten.count - 1} pings, got #{actions.values.flatten.count} pings.") unless actions.values.flatten.count == initial_post_data.values.flatten.count - 1
 
-  # puts %Q(\nGetting data for all devices in a range of dates...)
-  # lookup_date = timestamp_to_date(initial_post_data.values.flatten.max)
-  # expected_count = initial_post_data.values.flatten.find_all{|t| timestamp_to_date(t) == lookup_date}.count
-  # actions = get_on_dates("all", lookup_date, lookup_date + 1)
-  # fail!("Expected #{expected_count} pings, got #{actions.values.flatten.count} pings.") unless actions.values.flatten.count == expected_count
+  puts %Q(\nGetting data for all devices in a range of dates...)
+  lookup_date = timestamp_to_date(initial_post_data.values.flatten.max)
+  expected_count = initial_post_data.values.flatten.find_all{|t| timestamp_to_date(t) == lookup_date}.count
+  actions = get_on_dates("all", lookup_date, lookup_date + 1)
+  fail!("Expected #{expected_count} pings, got #{actions.values.flatten.count} pings.") unless actions.values.flatten.count == expected_count
 
-  # puts %Q(\nGetting data for an unrecognised device...)
-  # actions = get_on_dates("boo-urns", Date.new(2000, 1, 1), Date.new(2100, 1, 1))
-  # fail!("Expected 0 pings, got #{actions.count} pings.") unless actions.count == 0
+  puts %Q(\nGetting data for an unrecognised device...)
+  actions = get_on_dates("boo-urns", Date.new(2000, 1, 1), Date.new(2100, 1, 1))
+  fail!("Expected 0 pings, got #{actions.count} pings.") unless actions.count == 0
 
   fail!("Our post to /clear_data didn't return a 200 status code.") unless post_clear_data_request
   puts %Q(\nGood work! All tests seem to be passing!)
