@@ -42,7 +42,7 @@ fn get_devices() -> String {
         device_ids.push(device.id)
     }
 
-    // // Return the json representation of an array of device_ids. eg. "["id_1", "id_2"]"
+    // Return the json representation of an array of device_ids. eg. "["id_1", "id_2"]"
     serde_json::to_string(&device_ids).unwrap()
 }
 
@@ -70,6 +70,26 @@ fn ping(device_id: &str, epoch_time: i64) {
     diesel::insert(&new_ping).into(pings::table)
         .execute(&db_connection)
         .expect("Error saving ping.");
+}
+
+#[get("/<device_id>/<date>")]
+fn get_pings_on_date(device_id: &str, date: &str) -> String {
+    unimplemented!();
+}
+
+#[get("/<device_id>/<from>/<to>")]
+fn get_pings_between(device_id: &str, from: &str, to: &str) -> String {
+    unimplemented!();
+}
+
+#[get("/all/<date>")]
+fn get_all_on_date(date: &str) -> String {
+    unimplemented!();
+}
+
+#[get("/all/<from>/<to>")]
+fn get_all_between(from: &str, to: &str) -> String {
+    unimplemented!();
 }
 
 fn main() {

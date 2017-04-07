@@ -11,7 +11,7 @@ require 'date'
 def run_tests!
   puts %Q(Hi! We'll be testing your server running at #{BASE_URL})
 
-  # puts %Q(\nAsking the server to clear all data...)
+  puts %Q(\nAsking the server to clear all data...)
   fail!("Our post to /clear_data didn't return a 200 status code.") unless post_clear_data_request
   fail!("We asked the server to clear all data, but it seems like there is still some data present.") unless get_device_list.empty?
 
@@ -22,11 +22,11 @@ def run_tests!
   devices = get_device_list
   fail!("Expected #{initial_post_data.keys.count} devices, got #{devices.count} devices.") unless devices.count == initial_post_data.keys.count
 
-  # puts %Q(\nGetting data for device #{initial_post_data.keys.first} on a specific date...)
-  # lookup_date = timestamp_to_date(initial_post_data.values.first.first)
-  # expected_count = initial_post_data.values.first.find_all{|t| timestamp_to_date(t) == lookup_date}.count
-  # actions = get_on_date(initial_post_data.keys.first, lookup_date)
-  # fail!("Expected #{expected_count} pings, got #{actions.count} pings.") unless actions.count == expected_count
+  puts %Q(\nGetting data for device #{initial_post_data.keys.first} on a specific date...)
+  lookup_date = timestamp_to_date(initial_post_data.values.first.first)
+  expected_count = initial_post_data.values.first.find_all{|t| timestamp_to_date(t) == lookup_date}.count
+  actions = get_on_date(initial_post_data.keys.first, lookup_date)
+  fail!("Expected #{expected_count} pings, got #{actions.count} pings.") unless actions.count == expected_count
 
   # puts %Q(\nGetting data for device #{initial_post_data.keys.last} on a range of dates...)
   # lookup_date = timestamp_to_date(initial_post_data.values.last.first)
