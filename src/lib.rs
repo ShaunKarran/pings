@@ -28,13 +28,13 @@ pub mod schema {
 pub mod models {
     use super::schema::{devices, pings};
 
-    #[derive(Insertable, Queryable)]
+    #[derive(Debug, Insertable, Queryable)]
     #[table_name="devices"]
     pub struct Device {
         pub id: String
     }
 
-    #[derive(Insertable, Queryable)]
+    #[derive(Debug, Insertable, Queryable)]
     #[table_name="pings"]
     pub struct Ping {
         pub epoch_time: i64,

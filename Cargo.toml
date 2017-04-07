@@ -13,10 +13,12 @@ name = "pings"
 path = "src/main.rs"
 
 [dependencies]
+chrono = "0.3"
 dotenv = "0.8"
 rocket = "0.2"
 rocket_codegen = "0.2"
 serde_json = "0.9"
+time = "0.1"
 
 [dependencies.diesel]
 version = "0.12"
