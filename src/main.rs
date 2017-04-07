@@ -16,6 +16,15 @@ use time::Duration;
 use libpings::utils::establish_connection;
 use libpings::models::{Device, Ping};
 
+fn parse_ISO(iso: &str) -> i64 {
+    let mut iso_string = iso.to_string();
+    iso_string.push_str(" 00:00:00"); // Cannot parse without time.
+
+    let date_time = UTC.datetime_from_str(&iso_string, "%Y-%m-%d %H:%M:%S").unwrap();
+
+    date_time.timestamp()
+}
+
 #[post("/clear_data")]
 fn clear_data() {
     // Get the variables that refer to the tables.
@@ -94,6 +103,7 @@ fn get_pings_on_date(device_id: &str, date: &str) -> String {
     let from_timestamp = from_date_time.timestamp();
     let to_timestamp = to_date_time.timestamp();
 
+    // Query the database.
     let results = pings::table
         .filter(pings::dsl::device_id.eq(device_id))
         .filter(pings::dsl::epoch_time.ge(from_timestamp)) // >=
@@ -113,7 +123,37 @@ fn get_pings_on_date(device_id: &str, date: &str) -> String {
 
 #[get("/<device_id>/<from>/<to>")]
 fn get_pings_between(device_id: &str, from: &str, to: &str) -> String {
-    unimplemented!();
+    // Get the variables that refer to the tables.
+    use libpings::schema::{devices, pings};
+
+    let db_connection = establish_connection();
+
+    // Attempt to parse as epoch_time, on failure parse as ISO format.
+    let from_timestamp = match from.parse::<i64>() {
+        Ok(value) => value,
+        Err(_) => parse_ISO(from),
+    };
+    let to_timestamp = match to.parse::<i64>() {
+        Ok(value) => value,
+        Err(_) => parse_ISO(to),
+    };
+
+    // Query the database.
+    let results = pings::table
+        .filter(pings::dsl::device_id.eq(device_id))
+        .filter(pings::dsl::epoch_time.ge(from_timestamp)) // >=
+        .filter(pings::dsl::epoch_time.lt(to_timestamp)) // <
+        .load::<Ping>(&db_connection)
+        .expect("Error getting pings.");
+
+    // Collect all the ping timestamps into a vector.
+    let mut ping_epochs = Vec::new();
+    for ping in results {
+        ping_epochs.push(ping.epoch_time);
+    }
+
+    // Return the json representation of an array of timestamps. eg. "[1234, 4321]"
+    serde_json::to_string(&ping_epochs).unwrap()
 }
 
 #[get("/all/<date>")]

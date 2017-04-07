@@ -28,18 +28,18 @@ def run_tests!
   actions = get_on_date(initial_post_data.keys.first, lookup_date)
   fail!("Expected #{expected_count} pings, got #{actions.count} pings.") unless actions.count == expected_count
 
-  # puts %Q(\nGetting data for device #{initial_post_data.keys.last} on a range of dates...)
-  # lookup_date = timestamp_to_date(initial_post_data.values.last.first)
-  # actions = get_on_dates(initial_post_data.keys.last, lookup_date - 1, lookup_date + 1)
-  # fail!("Expected #{initial_post_data.values.last.count} pings, got #{actions.count} pings.") unless actions.count == initial_post_data.values.last.count
+  puts %Q(\nGetting data for device #{initial_post_data.keys.last} on a range of dates...)
+  lookup_date = timestamp_to_date(initial_post_data.values.last.first)
+  actions = get_on_dates(initial_post_data.keys.last, lookup_date - 1, lookup_date + 1)
+  fail!("Expected #{initial_post_data.values.last.count} pings, got #{actions.count} pings.") unless actions.count == initial_post_data.values.last.count
 
-  # puts %Q(\nGetting data for device #{initial_post_data.keys.last} on a range of timestamps (inclusive of last)...)
-  # actions = get_on_dates(initial_post_data.keys.last, initial_post_data.values.last.first, initial_post_data.values.last.last + 1)
-  # fail!("Expected #{initial_post_data.values.last.count} pings, got #{actions.count} pings.") unless actions.count == initial_post_data.values.last.count
+  puts %Q(\nGetting data for device #{initial_post_data.keys.last} on a range of timestamps (inclusive of last)...)
+  actions = get_on_dates(initial_post_data.keys.last, initial_post_data.values.last.first, initial_post_data.values.last.last + 1)
+  fail!("Expected #{initial_post_data.values.last.count} pings, got #{actions.count} pings.") unless actions.count == initial_post_data.values.last.count
 
-  # puts %Q(\nGetting data for device #{initial_post_data.keys.last} on a range of timestamps (exclusive of last)...)
-  # actions = get_on_dates(initial_post_data.keys.last, initial_post_data.values.last.first, initial_post_data.values.last.last)
-  # fail!("Expected #{initial_post_data.values.last.count - 1} pings, got #{actions.count} pings.") unless actions.count == initial_post_data.values.last.count - 1
+  puts %Q(\nGetting data for device #{initial_post_data.keys.last} on a range of timestamps (exclusive of last)...)
+  actions = get_on_dates(initial_post_data.keys.last, initial_post_data.values.last.first, initial_post_data.values.last.last)
+  fail!("Expected #{initial_post_data.values.last.count - 1} pings, got #{actions.count} pings.") unless actions.count == initial_post_data.values.last.count - 1
 
   # puts %Q(\nGetting all data for all devices...)
   # actions = get_on_dates("all", Date.new(2000, 1, 1), Date.new(2100, 1, 1))
