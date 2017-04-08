@@ -15,14 +15,12 @@ use chrono::prelude::*;
 use diesel::prelude::*;
 use time::Duration;
 
-use libpings::utils::{establish_connection, parse_iso};
 use libpings::models::{Device, Ping};
+use libpings::schema::{devices, pings};
+use libpings::utils::{establish_connection, parse_iso};
 
 #[post("/clear_data")]
 fn clear_data() {
-    // Get the variables that refer to the tables.
-    use libpings::schema::{devices, pings};
-
     let db_connection = establish_connection();
 
     // Delete all pings first because they refer to devices.
@@ -32,9 +30,6 @@ fn clear_data() {
 
 #[get("/devices")]
 fn get_devices() -> String {
-    // Get the variables that refer to the tables.
-    use libpings::schema::devices;
-
     let db_connection = establish_connection();
 
     // Get all devices from the table.
@@ -53,9 +48,6 @@ fn get_devices() -> String {
 
 #[post("/<device_id>/<epoch_time>")]
 fn ping(device_id: &str, epoch_time: i64) {
-    // Get the variables that refer to the tables.
-    use libpings::schema::{devices, pings};
-
     let db_connection = establish_connection();
 
     // Create new objects to be inserted into the database.
@@ -79,9 +71,6 @@ fn ping(device_id: &str, epoch_time: i64) {
 
 #[get("/<device_id>/<date>", rank = 2)]
 fn get_pings_on_date(device_id: &str, date: &str) -> String {
-    // Get the variables that refer to the tables.
-    use libpings::schema::pings;
-
     let db_connection = establish_connection();
 
     let mut date_string = date.to_string();
@@ -115,9 +104,6 @@ fn get_pings_on_date(device_id: &str, date: &str) -> String {
 
 #[get("/<device_id>/<from>/<to>", rank = 2)]
 fn get_pings_between(device_id: &str, from: &str, to: &str) -> String {
-    // Get the variables that refer to the tables.
-    use libpings::schema::pings;
-
     let db_connection = establish_connection();
 
     // Attempt to parse as epoch_time, on failure parse as ISO format.
@@ -150,14 +136,39 @@ fn get_pings_between(device_id: &str, from: &str, to: &str) -> String {
 
 #[get("/<date>", rank = 1)]
 fn get_all_on_date(date: &str) -> String {
-    unimplemented!();
+    let db_connection = establish_connection();
+
+    let mut date_string = date.to_string();
+    date_string.push_str(" 00:00:00"); // Cannot parse without time.
+
+    // Create the `from` and `to` datetimes.
+    let from_date_time = UTC.datetime_from_str(&date_string, "%Y-%m-%d %H:%M:%S").unwrap();
+    let to_date_time = from_date_time + Duration::days(1);
+
+    // Convert to epoch for easy comparisons.
+    let from_timestamp = from_date_time.timestamp();
+    let to_timestamp = to_date_time.timestamp();
+
+    // Query the database.
+    let results = pings::table
+        .filter(pings::dsl::epoch_time.ge(from_timestamp)) // >=
+        .filter(pings::dsl::epoch_time.lt(to_timestamp)) // <
+        .load::<Ping>(&db_connection)
+        .expect("Error getting pings.");
+
+    // Collect all the ping timestamps into a vector.
+    let mut ping_epochs: HashMap<String, Vec<i64>> = HashMap::new();
+    for ping in results {
+        // If a device_id doesnt exist yet, insert it with a new empty vector before pushing the new epoch time.
+        ping_epochs.entry(ping.device_id).or_insert(Vec::new()).push(ping.epoch_time);
+    }
+
+    // Return the json representation of an hash of device_id: timestamps. eg. "{"qwe": [124, 431], "ewq": [124, 432]}"
+    serde_json::to_string(&ping_epochs).unwrap()
 }
 
 #[get("/<from>/<to>", rank = 1)]
 fn get_all_between(from: &str, to: &str) -> String {
-    // Get the variables that refer to the tables.
-    use libpings::schema::pings;
-
     let db_connection = establish_connection();
 
     // Attempt to parse as epoch_time, on failure parse as ISO format.
