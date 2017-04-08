@@ -30,10 +30,8 @@ pub mod utils {
     pub fn establish_connection() -> PgConnection {
         dotenv().ok();
 
-        let database_url = env::var("DATABASE_URL")
-            .expect("DATABASE_URL must be set");
-        PgConnection::establish(&database_url)
-            .expect(&format!("Error connecting to {}", database_url))
+        let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+        PgConnection::establish(&database_url).expect(&format!("Error connecting to {}", database_url))
     }
 
     /// Parse an ISO formated date into a timestamp (epoch time).
@@ -76,13 +74,13 @@ pub mod models {
     #[derive(Debug, Insertable, Queryable)]
     #[table_name="devices"]
     pub struct Device {
-        pub id: String
+        pub id: String,
     }
 
     #[derive(Debug, Insertable, Queryable)]
     #[table_name="pings"]
     pub struct Ping {
         pub epoch_time: i64,
-        pub device_id: String
+        pub device_id: String,
     }
 }

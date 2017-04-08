@@ -38,8 +38,7 @@ fn get_devices() -> String {
     let db_connection = establish_connection();
 
     // Get all devices from the table.
-    let results = devices::table
-        .load::<Device>(&db_connection)
+    let results = devices::table.load::<Device>(&db_connection)
         .expect("Error getting devices.");
 
     // Collect all the device_ids into a vector.
@@ -60,20 +59,20 @@ fn ping(device_id: &str, epoch_time: i64) {
     let db_connection = establish_connection();
 
     // Create new objects to be inserted into the database.
-    let new_device = Device {
-        id: device_id.to_string()
-    };
+    let new_device = Device { id: device_id.to_string() };
     let new_ping = Ping {
         epoch_time: epoch_time,
-        device_id: device_id.to_string()
+        device_id: device_id.to_string(),
     };
 
     // Insert into database.
-    diesel::insert(&new_device).into(devices::table)
+    diesel::insert(&new_device)
+        .into(devices::table)
         .execute(&db_connection);
-        // Currently ignoring this for the case where the device already exists. TODO: Catch other errors.
-        // .expect("Error saving device.");
-    diesel::insert(&new_ping).into(pings::table)
+    // Currently ignoring this for the case where the device already exists. TODO: Catch other errors.
+    // .expect("Error saving device.");
+    diesel::insert(&new_ping)
+        .into(pings::table)
         .execute(&db_connection)
         .expect("Error saving ping.");
 }
