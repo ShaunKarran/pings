@@ -15,17 +15,8 @@ use chrono::prelude::*;
 use diesel::prelude::*;
 use time::Duration;
 
-use libpings::utils::establish_connection;
+use libpings::utils::{establish_connection, parse_iso};
 use libpings::models::{Device, Ping};
-
-fn parse_iso(iso: &str) -> i64 {
-    let mut iso_string = iso.to_string();
-    iso_string.push_str(" 00:00:00"); // Cannot parse without time.
-
-    let date_time = UTC.datetime_from_str(&iso_string, "%Y-%m-%d %H:%M:%S").unwrap();
-
-    date_time.timestamp()
-}
 
 #[post("/clear_data")]
 fn clear_data() {
