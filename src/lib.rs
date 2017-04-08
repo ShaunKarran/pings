@@ -5,6 +5,7 @@ extern crate diesel;
 extern crate diesel_codegen;
 extern crate dotenv;
 
+/// Utility functions for the pings application.
 pub mod utils {
     use std::env;
 
@@ -13,6 +14,19 @@ pub mod utils {
     use diesel::prelude::*;
     use dotenv::dotenv;
 
+    /// Establish a connection to the database specified in the `"DATABASE_URL"` env variable.
+    ///
+    /// # Panics
+    ///
+    /// Will panic! if the `"DATABASE_URL"` variable is not set or a connection cannot be established.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use libpings::utils::establish_connection;
+    ///
+    /// let db_connection = establish_connection();
+    /// ```
     pub fn establish_connection() -> PgConnection {
         dotenv().ok();
 
@@ -45,6 +59,13 @@ pub mod utils {
     }
 }
 
+/// Infers the schema of the connected database.
+///
+/// # Examples
+///
+/// ```
+/// use libpings::schema::pings;
+/// ```
 pub mod schema {
     infer_schema!("dotenv:DATABASE_URL");
 }
