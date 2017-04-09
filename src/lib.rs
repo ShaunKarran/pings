@@ -47,11 +47,9 @@ pub mod utils {
     ///
     /// let timestamp = parse_iso("2017-04-08");
     /// ```
-    pub fn parse_iso(iso: &str) -> i64 {
-        let mut iso_string = iso.to_string();
-        iso_string.push_str(" 00:00:00"); // Cannot parse without time.
-
-        let date_time = UTC.datetime_from_str(&iso_string, "%Y-%m-%d %H:%M:%S").unwrap();
+    pub fn parse_iso_date(mut iso_date: String) -> i64 {
+        iso_date.push_str(" 00:00:00"); // Cannot parse without time.
+        let date_time = UTC.datetime_from_str(&iso_date, "%Y-%m-%d %H:%M:%S").unwrap();
 
         date_time.timestamp()
     }

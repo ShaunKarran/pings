@@ -17,7 +17,7 @@ use time::Duration;
 
 use libpings::models::{Device, Ping};
 use libpings::schema::{devices, pings};
-use libpings::utils::{establish_connection, parse_iso};
+use libpings::utils::{establish_connection, parse_iso_date};
 
 #[post("/clear_data")]
 fn clear_data() {
@@ -47,14 +47,14 @@ fn get_devices() -> String {
 }
 
 #[post("/<device_id>/<epoch_time>")]
-fn ping(device_id: &str, epoch_time: i64) {
+fn ping(device_id: String, epoch_time: i64) {
     let db_connection = establish_connection();
 
     // Create new objects to be inserted into the database.
-    let new_device = Device { id: device_id.to_string() };
+    let new_device = Device { id: device_id.clone() };
     let new_ping = Ping {
         epoch_time: epoch_time,
-        device_id: device_id.to_string(),
+        device_id: device_id.clone(),
     };
 
     // Insert into database.
@@ -70,14 +70,12 @@ fn ping(device_id: &str, epoch_time: i64) {
 }
 
 #[get("/<device_id>/<date>", rank = 2)]
-fn get_pings_on_date(device_id: &str, date: &str) -> String {
+fn get_pings_on_date(device_id: String, mut date: String) -> String {
     let db_connection = establish_connection();
 
-    let mut date_string = date.to_string();
-    date_string.push_str(" 00:00:00"); // Cannot parse without time.
-
     // Create the `from` and `to` datetimes.
-    let from_date_time = UTC.datetime_from_str(&date_string, "%Y-%m-%d %H:%M:%S").unwrap();
+    date.push_str(" 00:00:00"); // Cannot parse without time.
+    let from_date_time = UTC.datetime_from_str(&date, "%Y-%m-%d %H:%M:%S").unwrap();
     let to_date_time = from_date_time + Duration::days(1);
 
     // Convert to epoch for easy comparisons.
@@ -103,17 +101,17 @@ fn get_pings_on_date(device_id: &str, date: &str) -> String {
 }
 
 #[get("/<device_id>/<from>/<to>", rank = 2)]
-fn get_pings_between(device_id: &str, from: &str, to: &str) -> String {
+fn get_pings_between(device_id: String, from: String, to: String) -> String {
     let db_connection = establish_connection();
 
     // Attempt to parse as epoch_time, on failure parse as ISO format.
     let from_timestamp = match from.parse::<i64>() {
         Ok(value) => value,
-        Err(_) => parse_iso(from),
+        Err(_) => parse_iso_date(from),
     };
     let to_timestamp = match to.parse::<i64>() {
         Ok(value) => value,
-        Err(_) => parse_iso(to),
+        Err(_) => parse_iso_date(to),
     };
 
     // Query the database.
@@ -135,14 +133,12 @@ fn get_pings_between(device_id: &str, from: &str, to: &str) -> String {
 }
 
 #[get("/<date>", rank = 1)]
-fn get_all_on_date(date: &str) -> String {
+fn get_all_on_date(mut date: String) -> String {
     let db_connection = establish_connection();
 
-    let mut date_string = date.to_string();
-    date_string.push_str(" 00:00:00"); // Cannot parse without time.
-
     // Create the `from` and `to` datetimes.
-    let from_date_time = UTC.datetime_from_str(&date_string, "%Y-%m-%d %H:%M:%S").unwrap();
+    date.push_str(" 00:00:00"); // Cannot parse without time.
+    let from_date_time = UTC.datetime_from_str(&date, "%Y-%m-%d %H:%M:%S").unwrap();
     let to_date_time = from_date_time + Duration::days(1);
 
     // Convert to epoch for easy comparisons.
@@ -168,17 +164,17 @@ fn get_all_on_date(date: &str) -> String {
 }
 
 #[get("/<from>/<to>", rank = 1)]
-fn get_all_between(from: &str, to: &str) -> String {
+fn get_all_between(from: String, to: String) -> String {
     let db_connection = establish_connection();
 
     // Attempt to parse as epoch_time, on failure parse as ISO format.
     let from_timestamp = match from.parse::<i64>() {
         Ok(value) => value,
-        Err(_) => parse_iso(from),
+        Err(_) => parse_iso_date(from),
     };
     let to_timestamp = match to.parse::<i64>() {
         Ok(value) => value,
-        Err(_) => parse_iso(to),
+        Err(_) => parse_iso_date(to),
     };
 
     // Query the database.
