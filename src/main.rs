@@ -156,7 +156,9 @@ fn get_all_on_date(mut date: String) -> String {
     let mut ping_epochs: HashMap<String, Vec<i64>> = HashMap::new();
     for ping in results {
         // If a device_id doesnt exist yet, insert it with a new empty vector before pushing the new epoch time.
-        ping_epochs.entry(ping.device_id).or_insert(Vec::new()).push(ping.epoch_time);
+        ping_epochs.entry(ping.device_id)
+            .or_insert(Vec::new())
+            .push(ping.epoch_time);
     }
 
     // Return the json representation of an hash of device_id: timestamps. eg. "{"qwe": [124, 431], "ewq": [124, 432]}"
@@ -188,7 +190,9 @@ fn get_all_between(from: String, to: String) -> String {
     let mut ping_epochs: HashMap<String, Vec<i64>> = HashMap::new();
     for ping in results {
         // If a device_id doesnt exist yet, insert it with a new empty vector before pushing the new epoch time.
-        ping_epochs.entry(ping.device_id).or_insert(Vec::new()).push(ping.epoch_time);
+        ping_epochs.entry(ping.device_id)
+            .or_insert(Vec::new())
+            .push(ping.epoch_time);
     }
 
     // Return the json representation of an hash of device_id: timestamps. eg. "{"qwe": [124, 431], "ewq": [124, 432]}"
