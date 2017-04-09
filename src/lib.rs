@@ -43,9 +43,9 @@ pub mod utils {
     /// # Examples
     ///
     /// ```
-    /// use libpings::utils::parse_iso;
+    /// use libpings::utils::parse_iso_date;
     ///
-    /// let timestamp = parse_iso("2017-04-08");
+    /// let timestamp = parse_iso_date("2017-04-08".to_string());
     /// ```
     pub fn parse_iso_date(mut iso_date: String) -> i64 {
         iso_date.push_str(" 00:00:00"); // Cannot parse without time.
